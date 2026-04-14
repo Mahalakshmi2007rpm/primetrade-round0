@@ -29,6 +29,8 @@ size_segment = load_table('size_segment.csv')
 consistency_segment = load_table('consistency_segment.csv')
 archetypes = load_table('trader_archetypes.csv')
 archetype_summary = load_table('trader_archetype_summary.csv')
+bonus_report = load_table('bonus_classification_report.csv')
+bonus_cm = load_table('bonus_confusion_matrix.csv')
 
 if sentiment_summary.empty:
     st.error('No analysis tables found. Run src/analyze_sentiment.py first.')
@@ -110,6 +112,38 @@ else:
         filtered.sort_values('total_pnl', ascending=False).head(20),
         use_container_width=True,
     )
+
+st.subheader('Prediction Bonus: Next-Day Profitability Buckets')
+if bonus_report.empty or bonus_cm.empty:
+    st.info('No prediction outputs found. Run notebook section 11 to generate bonus prediction tables.')
+else:
+    report_cols = ['precision', 'recall', 'f1-score', 'support']
+    available_cols = [c for c in report_cols if c in bonus_report.columns]
+    st.caption('Model quality by class (loss / flat / profit)')
+    st.dataframe(bonus_report, use_container_width=True)
+
+    if available_cols:
+        score_view = bonus_report.set_index(bonus_report.columns[0])[available_cols]
+        fig_report = px.bar(
+            score_view.reset_index(),
+            x=score_view.index.name,
+            y=[c for c in ['precision', 'recall', 'f1-score'] if c in score_view.columns],
+            barmode='group',
+            title='Prediction Metrics by Class',
+        )
+        st.plotly_chart(fig_report, use_container_width=True)
+
+    cm_name_col = bonus_cm.columns[0]
+    cm_df = bonus_cm.copy().set_index(cm_name_col)
+    cm_plot = px.imshow(
+        cm_df,
+        text_auto=True,
+        color_continuous_scale='Blues',
+        title='Confusion Matrix (Actual vs Predicted)',
+    )
+    cm_plot.update_xaxes(title='Predicted class')
+    cm_plot.update_yaxes(title='Actual class')
+    st.plotly_chart(cm_plot, use_container_width=True)
 
 st.subheader('Static Charts')
 for chart_name in [
