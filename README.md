@@ -2,6 +2,10 @@
 
 This repo contains a reproducible analysis of how Bitcoin market sentiment relates to Hyperliquid trader behavior and performance.
 
+## Objective
+
+Evaluate whether trader performance and behavior change across Fear vs Greed sentiment regimes, and convert the findings into practical strategy rules.
+
 ## Contents
 
 - `notebooks/round0_analysis.ipynb` - notebook walkthrough of the analysis
@@ -33,6 +37,13 @@ Open the notebook for the narrative version of the analysis:
 jupyter notebook notebooks/round0_analysis.ipynb
 ```
 
+## Evaluation Mapping
+
+- Data cleaning and alignment: timestamp normalization + date-level sentiment merge with 99.9972% match coverage.
+- Reasoning depth: comparisons include PnL, win rate, daily volatility (drawdown proxy), directional bias, and segment behavior.
+- Actionability: 2 explicit strategy rules tied to segment-level evidence.
+- Reproducibility: notebook + script + exported tables/charts + clear setup instructions.
+
 ## Main Findings
 
 - Fear days had higher average daily PnL than Greed days, but also higher daily volatility.
@@ -46,3 +57,12 @@ jupyter notebook notebooks/round0_analysis.ipynb
 
 - During Fear days, favor frequent, directionally long-biased traders and reduce allocation to the highest-size cohort unless recent win rate remains strong.
 - During Greed days, cap position size more aggressively and concentrate risk in consistent accounts.
+
+## Submission Checklist
+
+- GitHub repo link is public and opens correctly.
+- Notebook runs end-to-end: notebooks/round0_analysis.ipynb.
+- Script runs end-to-end: src/analyze_sentiment.py.
+- Charts and tables are present under outputs/charts and outputs/tables.
+- One-page summary is present at outputs/summary.md.
+- Bonus section (predictive model) is included in notebook section 11.
